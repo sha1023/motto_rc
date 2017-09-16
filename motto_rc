@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+### ### MOTTO UTILITIES ### ###
+
+# Terminal colors
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
+export TERM="xterm-color"
+
+#My minimalistic version:
+export ShaPS1
+ShaPS1='\[\e[0;33m\]\[\e[0;34m\]\W\[\e[0m\]\$ '
+
+#define motto state
+if [ -z "${MottoStateDir}" ]
+then
+    MottoStateDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+fi
+export MottoState
+MottoState="${MottoStateDir}/.motto"
+
+#Trick for color label in this case (your personal motto):
+if [ -z $MottoColor ]
+then
+    export MottoColor=$(tput setaf 1) # Red
+fi
+
+###update MOTTO
+function motto(){
+    if [ $# -ne 0 ]
+    then
+        echo "$@" > $MottoState
+    fi
+    PS1="\[${MottoColor}\]$(cat $MottoState)\[${NormalColor}\]:${ShaPS1}"
+}
+
+###Create MottoState if it does not exist already
+if [ ! -f "${MottoState}" ]
+then
+    echo "I would rather be a sunflower." > ${MottoState}
+fi
+
+motto
